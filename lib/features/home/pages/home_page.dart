@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:state_management/data/repositories/province_repository.dart';
 import 'package:state_management/features/home/provider/home_controller.dart';
 import 'package:state_management/features/home/widget/decrement_button.dart';
 import 'package:state_management/features/home/widget/increment_button.dart';
+import 'package:state_management/features/province/pages/province_page.dart';
+import 'package:state_management/features/province/providers/province_controller.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
