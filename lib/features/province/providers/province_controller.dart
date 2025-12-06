@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:state_management/data/models/province_response.dart';
 import 'package:state_management/data/repositories/province_repository.dart';
@@ -26,8 +24,6 @@ class ProvinceController extends ChangeNotifier {
         provinceList.clear();
         provinceList.addAll(provinceListResponse);
       }
-
-      log('Province list: $provinceList');
     } catch (e) {
       errorMessage = e.toString();
     } finally {
