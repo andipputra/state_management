@@ -4,6 +4,7 @@ import 'package:state_management/data/repositories/province_repository.dart';
 import 'package:state_management/features/home/pages/home_page.dart';
 import 'package:state_management/features/home/provider/home_controller.dart';
 import 'package:state_management/features/province/pages/province_page.dart';
+import 'package:state_management/features/province/providers/province_controller.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,7 +44,11 @@ class MyApp extends StatelessWidget {
             create: (context) => HomeController(),
             child: const MyHomePage(),
           ),
-          '/province': (context) => const ProvincePage(),
+          '/province': (context) => ChangeNotifierProvider(
+            create: (context) =>
+                ProvinceController(context.read<ProvinceRepository>()),
+            child: const ProvincePage(),
+          ),
         },
         initialRoute: '/',
       ),

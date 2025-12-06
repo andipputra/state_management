@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:state_management/data/models/province_response.dart';
 
@@ -7,6 +9,8 @@ class ProvinceRepository {
   Future<List<ProvinceResponse>> getProvince() async {
     try {
       final response = await _dio.get('/provinces');
+
+      log('Province response: $response');
 
       if (response.statusCode == 200) {
         final responseData = response.data;

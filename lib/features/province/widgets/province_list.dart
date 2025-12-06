@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:state_management/features/province/inherited_widget/province_inherited_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:state_management/features/province/providers/province_controller.dart';
 import 'package:state_management/features/province/widgets/province_item.dart';
 
 class ProvinceList extends StatelessWidget {
@@ -7,10 +8,9 @@ class ProvinceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProvinceInheritedWidget? provinceInheritedWidget = context
-        .dependOnInheritedWidgetOfExactType<ProvinceInheritedWidget>();
+    final controller = context.watch<ProvinceController>();
 
-    final provinceList = provinceInheritedWidget?.provinceList ?? [];
+    final provinceList = controller.provinceList;
 
     if (provinceList.isEmpty) {
       return Center(
@@ -24,7 +24,7 @@ class ProvinceList extends StatelessWidget {
     return Column(
       children: [
         FilledButton(
-          onPressed: provinceInheritedWidget?.refreshDataList,
+          onPressed: controller.getProvince,
           child: Text('Refresh Data'),
         ),
         Expanded(
