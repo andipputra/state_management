@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:state_management/data/models/province_response.dart';
 import 'package:state_management/data/repositories/province_repository.dart';
-import 'package:state_management/features/province/inherited_widget/province_inherited_widget.dart';
-import 'package:state_management/features/province/widgets/province_list.dart';
+import 'package:state_management/features/province/widgets/province_item.dart';
 import 'package:state_management/features/province/widgets/province_loader.dart';
 
 class ProvincePage extends StatefulWidget {
@@ -54,16 +53,24 @@ class _ProvincePageState extends State<ProvincePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ProvinceInheritedWidget(
-      provinceList: _provinceList,
-      isLoading: _isLoading,
-      refreshDataList: _getProvinces,
-      child: Scaffold(
-        appBar: AppBar(title: Text('Indonesia Province')),
-        body: _isLoading
-            ? Center(child: ProvinceLoader())
-            : ProvinceList(),
-      ),
+    return Scaffold(
+      appBar: AppBar(title: Text('Indonesia Province')),
+      body: _isLoading
+          ? Center(child: ProvinceLoader())
+          : _provinceList.isEmpty
+          ? Center(
+              child: Text(
+                'No province found',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            )
+          : ListView.separated(
+              padding: EdgeInsets.all(16),
+              itemCount: _provinceList.length,
+              separatorBuilder: (context, index) => SizedBox(height: 16),
+              itemBuilder: (context, index) =>
+                  ProvinceItem(province: _provinceList[index]),
+            ),
     );
   }
 }
