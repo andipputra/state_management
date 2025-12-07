@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:state_management/data/repositories/province_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:state_management/features/home/pages/home_page.dart';
-import 'package:state_management/features/home/provider/home_controller.dart';
 import 'package:state_management/features/province/pages/province_page.dart';
-import 'package:state_management/features/province/providers/province_controller.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,8 +13,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [Provider(create: (context) => ProvinceRepository())],
+    return ProviderScope(
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -40,15 +36,8 @@ class MyApp extends StatelessWidget {
         ),
         // home: const MyHomePage(),
         routes: {
-          '/': (context) => ChangeNotifierProvider(
-            create: (context) => HomeController(),
-            child: const MyHomePage(),
-          ),
-          '/province': (context) => ChangeNotifierProvider(
-            create: (context) =>
-                ProvinceController(context.read<ProvinceRepository>()),
-            child: const ProvincePage(),
-          ),
+          '/': (context) => const MyHomePage(),
+          '/province': (context) => const ProvincePage(),
         },
         initialRoute: '/',
       ),

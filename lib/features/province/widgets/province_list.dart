@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:state_management/features/province/providers/province_controller.dart';
+import 'package:state_management/features/province/providers/province_notifier.dart';
 import 'package:state_management/features/province/widgets/province_item.dart';
 
-class ProvinceList extends StatelessWidget {
+class ProvinceList extends ConsumerWidget {
   const ProvinceList({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = context.watch<ProvinceController>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provinceValue = ref.watch(provinceProvider);
 
-    final provinceList = controller.provinceList;
+    final provinceList = provinceValue.value ?? [];
 
     if (provinceList.isEmpty) {
       return Center(
@@ -24,7 +25,7 @@ class ProvinceList extends StatelessWidget {
     return Column(
       children: [
         FilledButton(
-          onPressed: controller.getProvince,
+          onPressed: () => ref.invalidate(provinceProvider),
           child: Text('Refresh Data'),
         ),
         Expanded(

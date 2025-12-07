@@ -1,33 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:state_management/features/province/providers/province_controller.dart';
+import 'package:state_management/features/province/providers/province_notifier.dart';
 import 'package:state_management/features/province/widgets/province_list.dart';
 import 'package:state_management/features/province/widgets/province_loader.dart';
 
-class ProvincePage extends StatelessWidget {
+class ProvincePage extends ConsumerWidget {
   const ProvincePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = context.watch<ProvinceController>();
+  Widget build(BuildContext context, WidgetRef ref) {
 
-    if(controller.errorMessage != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    
+
+    ref.listen(provinceProvider, (previous, next) {
+      if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(controller.errorMessage!),
+            content: Text(next.error.toString()),
             backgroundColor: Colors.red,
           ),
         );
-        controller.clearErrorMessage(); // Clear the error after showing SnackBar
-      });
-    }
+      }
+    });
+
+    final provinceValue = ref.watch(provinceProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text('Indonesia Province')),
-      body: controller.isLoading
-          ? Center(child: ProvinceLoader())
-          : ProvinceList(),
+      body: provinceValue.maybeWhen(
+        data: (data) => ProvinceList(),
+        orElse: () => Center(child: ProvinceLoader()),
+      ),
     );
   }
 }

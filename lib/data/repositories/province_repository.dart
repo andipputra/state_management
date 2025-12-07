@@ -1,14 +1,23 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:state_management/core/connections/dio_connection.dart';
 import 'package:state_management/data/models/province_response.dart';
 
+part 'province_repository.g.dart';
+
+@riverpod
+ProvinceRepository provinceRepository(Ref ref) =>
+    ProvinceRepository(ref.read(dioProvider));
+
 class ProvinceRepository {
-  final _dio = Dio(BaseOptions(baseUrl: 'https://open-api.my.id/api/wilayah'));
+  final Dio dio;
+  const ProvinceRepository(this.dio);
 
   Future<List<ProvinceResponse>> getProvince() async {
     try {
-      final response = await _dio.get('/provinces');
+      final response = await dio.get('/provinces');
 
       log('Province response: $response');
 
@@ -26,7 +35,7 @@ class ProvinceRepository {
 
           final provinceList = dataList.whereType<ProvinceResponse>().toList();
 
-          if(provinceList.isEmpty){
+          if (provinceList.isEmpty) {
             throw Exception('Failed: Province is Empty');
           }
 
