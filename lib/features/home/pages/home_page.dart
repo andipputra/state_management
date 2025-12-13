@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:state_management/features/home/provider/home_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:state_management/features/home/bloc/home_bloc.dart';
+import 'package:state_management/features/home/cubit/home_new_cubit.dart';
 import 'package:state_management/features/home/widget/decrement_button.dart';
 import 'package:state_management/features/home/widget/increment_button.dart';
 
@@ -9,7 +10,7 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<HomeController>();
+    final homeNewCubit = context.watch<HomeNewCubit>();
 
     return Scaffold(
       appBar: AppBar(
@@ -21,8 +22,27 @@ class MyHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('You have pushed the button this many times:'),
+            BlocConsumer<HomeBloc, HomeState>(
+              listener: (context, state) {
+                if (state.counter % 2 == 0) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Counter is even')));
+                } else {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Counter is odd')));
+                }
+              },
+              builder: (context, state) {
+                return Text(
+                  'Home BLoC: ${state.counter}',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                );
+              },
+            ),
             Text(
-              '${controller.counter}',
+              'Home new Cubit: ${homeNewCubit.state}',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             DecrementButton(),
@@ -32,6 +52,12 @@ class MyHomePage extends StatelessWidget {
                 Navigator.of(context).pushNamed('/province');
               },
               child: Text('Go To Province'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/new_province');
+              },
+              child: Text('Go To New Province'),
             ),
           ],
         ),

@@ -1,10 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:state_management/data/repositories/province_repository.dart';
+import 'package:state_management/features/home/bloc/home_bloc.dart';
+import 'package:state_management/features/home/cubit/home_new_cubit.dart';
 import 'package:state_management/features/home/pages/home_page.dart';
-import 'package:state_management/features/home/provider/home_controller.dart';
+import 'package:state_management/features/new_province/new_province_bloc/new_province_bloc.dart';
+import 'package:state_management/features/new_province/pages/new_province_page.dart';
+import 'package:state_management/features/province/province_bloc/province_bloc.dart';
 import 'package:state_management/features/province/pages/province_page.dart';
-import 'package:state_management/features/province/providers/province_controller.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,8 +21,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [Provider(create: (context) => ProvinceRepository())],
+    return MultiBlocProvider(
+      providers: [
+        Provider(
+          create: (context) =>
+              Dio(BaseOptions(baseUrl: 'https://open-api.my.id/api/wilayah')),
+        ),
+        RepositoryProvider(
+          create: (context) => ProvinceRepository(context.read<Dio>()),
+        ),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -40,14 +53,24 @@ class MyApp extends StatelessWidget {
         ),
         // home: const MyHomePage(),
         routes: {
-          '/': (context) => ChangeNotifierProvider(
-            create: (context) => HomeController(),
+          '/': (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => HomeNewCubit()),
+              BlocProvider(create: (context) => HomeBloc()),
+            ],
             child: const MyHomePage(),
           ),
-          '/province': (context) => ChangeNotifierProvider(
-            create: (context) =>
-                ProvinceController(context.read<ProvinceRepository>()),
+          '/province': (context) => BlocProvider(
+            create: (context) => ProvinceBloc(
+              provinceRepository: context.read<ProvinceRepository>(),
+            ),
             child: const ProvincePage(),
+          ),
+          '/new_province': (context) => BlocProvider(
+            create: (context) => NewProvinceBloc(
+              provinceRepository: context.read<ProvinceRepository>(),
+            )..add(NewProvinceFetch()),
+            child: const NewProvincePage(),
           ),
         },
         initialRoute: '/',

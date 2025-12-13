@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:state_management/features/province/providers/province_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:state_management/features/province/province_bloc/province_bloc.dart';
 import 'package:state_management/features/province/widgets/province_item.dart';
 
 class ProvinceList extends StatelessWidget {
@@ -8,35 +8,28 @@ class ProvinceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<ProvinceController>();
-
-    final provinceList = controller.provinceList;
-
-    if (provinceList.isEmpty) {
-      return Center(
-        child: Text(
-          'No province found',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      );
-    }
-
-    return Column(
-      children: [
-        FilledButton(
-          onPressed: controller.getProvince,
-          child: Text('Refresh Data'),
-        ),
-        Expanded(
-          child: ListView.separated(
+    return BlocConsumer<ProvinceBloc, ProvinceState>(
+      builder: (context, state) {
+        return state.maybeMap(
+          success: (loadedState) => ListView.separated(
             padding: EdgeInsets.all(16),
-            itemCount: provinceList.length,
+            itemCount: loadedState.provinceList.length,
             separatorBuilder: (context, index) => SizedBox(height: 16),
             itemBuilder: (context, index) =>
-                ProvinceItem(province: provinceList[index]),
+                ProvinceItem(province: loadedState.provinceList[index]),
           ),
-        ),
-      ],
+          orElse: () => Center(child: CircularProgressIndicator()),
+        );
+      },
+      listener: (context, state) {
+        state.mapOrNull(
+          error: (errorMessage) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(errorMessage.message)));
+          },
+        );
+      },
     );
   }
 }
