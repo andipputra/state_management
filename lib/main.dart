@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:state_management/core/bloc_observer.dart';
 import 'package:state_management/data/repositories/province_repository.dart';
 import 'package:state_management/features/home/bloc/home_bloc.dart';
 import 'package:state_management/features/home/cubit/home_new_cubit.dart';
@@ -12,6 +13,7 @@ import 'package:state_management/features/province/province_bloc/province_bloc.d
 import 'package:state_management/features/province/pages/province_page.dart';
 
 void main() {
+  Bloc.observer = StateObserve();
   runApp(const MyApp());
 }
 
