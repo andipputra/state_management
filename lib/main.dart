@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:state_management/features/home/pages/home_page.dart';
+import 'package:get/get.dart';
+import 'package:state_management/main_binding.dart';
+import 'package:state_management/routes/pages.dart';
+import 'package:state_management/translation/app_translation.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +14,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -31,7 +34,19 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // home:  MyHomePage(),
+      initialRoute: AppPages.home,
+      getPages: AppPages.pages,
+      initialBinding: MainBinding(),
+      translations: AppTranslation(), // your translations
+      locale: Locale(
+        'id',
+        'ID',
+      ), // translations will be displayed in that locale
+      fallbackLocale: Locale(
+        'id',
+        'ID',
+      ), // specify the fallback locale in case an invalid locale is selected.
     );
   }
 }
